@@ -1,12 +1,28 @@
 {
     "869": {
         "pin": "66666",
-        "balance": 100000000,
+        "balance": 75000000,
         "transactions": [
             {
                 "id": "ec29ab2b-5b19-43ae-b18c-301f4de5254b",
                 "description": "Setor Tunai: +Rp 100,000,000",
                 "date": "2025-06-04 09:07:36"
+            },
+            {
+                "id": "9255f06e-7254-482c-b6d9-bfb23d94fa3e",
+                "description": "Transfer ke 868: -Rp 25,000,000",
+                "date": "2025-06-04 09:10:36"
+            }
+        ]
+    },
+    "868": {
+        "pin": "55555",
+        "balance": 25000000,
+        "transactions": [
+            {
+                "id": "322fe547-82c4-46b6-8e84-3d876ec9e7e3",
+                "description": "Transfer dari 869: +Rp 25,000,000",
+                "date": "2025-06-04 09:10:36"
             }
         ]
     }
