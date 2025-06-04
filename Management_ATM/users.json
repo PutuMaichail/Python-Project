@@ -1,0 +1,13 @@
+{
+    "869": {
+        "pin": "66666",
+        "balance": 100000000,
+        "transactions": [
+            {
+                "id": "ec29ab2b-5b19-43ae-b18c-301f4de5254b",
+                "description": "Setor Tunai: +Rp 100,000,000",
+                "date": "2025-06-04 09:07:36"
+            }
+        ]
+    }
+}
