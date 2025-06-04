@@ -1,4 +1,4 @@
 __pycache__/
 .venv/
-atm.log
-users.json
+/atm.log
+/users.json
