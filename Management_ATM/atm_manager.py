@@ -1,16 +1,13 @@
+# filepath: atm_manager.py
 import json
 import getpass
 from datetime import datetime
 import uuid
-import logging
 from colorama import Fore, Style
+from utils import configure_logging
 
 # Konfigurasi logging
-logging.basicConfig(
-    filename='atm.log',
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
+configure_logging('atm.log')
 
 
 class ATMManager:
@@ -45,7 +42,6 @@ class ATMManager:
             'transactions': []
         }
         print(Fore.GREEN + f"Akun baru berhasil dibuat untuk nomor rekening {account_number}." + Style.RESET_ALL)
-        logging.info(f"Akun baru dibuat untuk rekening {account_number}.")
 
     def authenticate_user(self):
         """Mengautentikasi pengguna berdasarkan nomor rekening dan PIN."""
@@ -64,11 +60,9 @@ class ATMManager:
                 self.current_user = account_number
                 self.session_transactions = []  # Reset transaksi sesi login
                 print(Fore.GREEN + "Login berhasil." + Style.RESET_ALL)
-                logging.info(f"Login berhasil untuk rekening {account_number}.")
                 return True
             else:
                 print(Fore.RED + "PIN salah." + Style.RESET_ALL)
-                logging.warning(f"Login gagal untuk rekening {account_number} (PIN salah).")
                 return False
         else:
             print(Fore.YELLOW + "Nomor rekening tidak ditemukan. Membuat akun baru..." + Style.RESET_ALL)
@@ -91,7 +85,6 @@ class ATMManager:
             self.users[self.current_user]['balance'] -= amount
             self.add_transaction(f"Tarik Tunai: -Rp {amount:,}")
             print(Fore.GREEN + f"Berhasil menarik Rp {amount:,}. Saldo Anda sekarang: Rp {self.users[self.current_user]['balance']:,}" + Style.RESET_ALL)
-            logging.info(f"Tarik tunai Rp {amount:,} dari rekening {self.current_user}.")
 
     def deposit(self):
         """Melakukan setor tunai."""
@@ -99,7 +92,6 @@ class ATMManager:
         self.users[self.current_user]['balance'] += amount
         self.add_transaction(f"Setor Tunai: +Rp {amount:,}")
         print(Fore.GREEN + f"Berhasil menyetor Rp {amount:,}. Saldo Anda sekarang: Rp {self.users[self.current_user]['balance']:,}" + Style.RESET_ALL)
-        logging.info(f"Setor tunai Rp {amount:,} ke rekening {self.current_user}.")
 
     def change_pin(self):
         """Mengubah PIN pengguna."""
@@ -109,7 +101,6 @@ class ATMManager:
             return
         self.users[self.current_user]['pin'] = new_pin
         print(Fore.GREEN + "PIN berhasil diubah." + Style.RESET_ALL)
-        logging.info(f"PIN diubah untuk rekening {self.current_user}.")
 
     def transfer(self):
         """Melakukan transfer antar-rekening."""
@@ -127,7 +118,6 @@ class ATMManager:
             self.add_transaction(f"Transfer ke {target_account}: -Rp {amount:,}")
             self.add_transaction(f"Transfer dari {self.current_user}: +Rp {amount:,}", target_account)
             print(Fore.GREEN + f"Berhasil mentransfer Rp {amount:,} ke rekening {target_account}." + Style.RESET_ALL)
-            logging.info(f"Transfer Rp {amount:,} dari rekening {self.current_user} ke rekening {target_account}.")
 
     def add_transaction(self, description, account=None):
         """Menambahkan riwayat transaksi."""
@@ -165,7 +155,6 @@ class ATMManager:
             print(Fore.YELLOW + "Tidak ada transaksi selama sesi login." + Style.RESET_ALL)
 
         self.save_users()
-        logging.info(f"User dengan rekening {self.current_user} logout.")
         print(Fore.GREEN + "Data berhasil disimpan. Terima kasih telah menggunakan layanan kami." + Style.RESET_ALL)
         self.current_user = None
         self.session_transactions = []  # Reset transaksi sesi login
@@ -181,53 +170,3 @@ class ATMManager:
                 return amount
             except ValueError:
                 print(Fore.RED + "Masukkan angka yang valid." + Style.RESET_ALL)
-
-
-def main():
-    atm = ATMManager()
-
-    print(Fore.CYAN + "=" * 40)
-    print(" SELAMAT DATANG DI ATM ".center(40, "="))
-    print("=" * 40 + Style.RESET_ALL)
-
-    if not atm.authenticate_user():
-        return
-
-    while True:
-        print(Fore.CYAN + "\nMenu:")
-        print("1. Cek Saldo")
-        print("2. Tarik Tunai")
-        print("3. Setor Tunai")
-        print("4. Ubah PIN")
-        print("5. Transfer Antar-Rekening")
-        print("6. Lihat Riwayat Transaksi")
-        print("7. Logout")
-        print("8. Keluar" + Style.RESET_ALL)
-        choice = input("Pilih menu: ").strip()
-
-        if choice == '1':
-            atm.check_balance()
-        elif choice == '2':
-            atm.withdraw()
-        elif choice == '3':
-            atm.deposit()
-        elif choice == '4':
-            atm.change_pin()
-        elif choice == '5':
-            atm.transfer()
-        elif choice == '6':
-            atm.view_transactions()
-        elif choice == '7':
-            atm.logout()
-            print(Fore.CYAN + "Silakan login kembali." + Style.RESET_ALL)
-            if not atm.authenticate_user():
-                break
-        elif choice == '8':
-            atm.logout()
-            break
-        else:
-            print(Fore.RED + "Pilihan tidak valid. Silakan coba lagi." + Style.RESET_ALL)
-
-
-if __name__ == "__main__":
-    main()
