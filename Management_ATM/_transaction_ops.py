@@ -1,5 +1,5 @@
 from colorama import Fore, Style
-from atm_manager import ATMManager
+from _atm_core import ATMManager
 
 class TransactionManagement(ATMManager):
     def check_balance(self):

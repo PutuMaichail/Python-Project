@@ -1,9 +1,9 @@
-from user_management import UserManagement
-from transaction_management import TransactionManagement
-from utils import configure_logging
+from 02_user_auth import UserManagement
+from 03_transaction_ops import TransactionManagement
+from 04_helpers import configure_logging
 
 def main():
-    configure_logging()
+    configure_logging('atm.log')
     atm = UserManagement()
 
     if not atm.authenticate_user():
@@ -26,6 +26,7 @@ def main():
             amount = int(input("Masukkan jumlah: "))
             atm.deposit(amount)
         elif choice == '4':
+            atm.logout()
             break
         else:
             print("Pilihan tidak valid.")
