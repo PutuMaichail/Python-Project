@@ -14,7 +14,10 @@ def main():
         print("1. Cek Saldo")
         print("2. Tarik Tunai")
         print("3. Setor Tunai")
-        print("4. Keluar")
+        print("4. Transfer")
+        print("5. Ubah PIN")
+        print("6. Riwayat Transaksi")
+        print("7. Keluar")
         choice = input("Pilih menu: ").strip()
 
         if choice == '1':
@@ -26,6 +29,12 @@ def main():
             amount = int(input("Masukkan jumlah: "))
             atm.deposit(amount)
         elif choice == '4':
+            atm.transfer()
+        elif choice == '5':
+            atm.change_pin()
+        elif choice == '6':
+            atm.view_transactions()
+        elif choice == '7':
             atm.logout()
             break
         else:
