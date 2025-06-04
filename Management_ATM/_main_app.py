@@ -1,6 +1,6 @@
-from 02_user_auth import UserManagement
-from 03_transaction_ops import TransactionManagement
-from 04_helpers import configure_logging
+from _user_auth import UserManagement
+from _transaction_ops import TransactionManagement
+from _helpers import configure_logging
 
 def main():
     configure_logging('atm.log')

@@ -1,6 +1,6 @@
 import getpass
 from colorama import Fore, Style
-from atm_manager import ATMManager
+from _atm_core import ATMManager
 
 class UserManagement(ATMManager):
     def create_user(self, account_number, pin):
