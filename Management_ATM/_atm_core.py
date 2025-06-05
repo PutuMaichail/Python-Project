@@ -25,14 +25,19 @@ class ATMManager:
                 self.users = json.load(file)
         except FileNotFoundError:
             self.users = {}
+            print(Fore.YELLOW + "File users.json tidak ditemukan. Membuat data kosong." + Style.RESET_ALL)
         except json.JSONDecodeError:
-            print(Fore.RED + "File JSON rusak. Menggunakan data kosong." + Style.RESET_ALL)
             self.users = {}
+            print(Fore.RED + "File JSON rusak. Menggunakan data kosong." + Style.RESET_ALL)
 
     def save_users(self):
         """Menyimpan data pengguna ke file JSON."""
-        with open(self.file_name, 'w') as file:
-            json.dump(self.users, file, indent=4)
+        try:
+            with open(self.file_name, 'w') as file:
+                json.dump(self.users, file, indent=4)
+            print(Fore.GREEN + "Data pengguna berhasil disimpan." + Style.RESET_ALL)
+        except Exception as e:
+            print(Fore.RED + f"Gagal menyimpan data pengguna: {e}" + Style.RESET_ALL)
 
     def create_user(self, account_number, pin):
         """Membuat pengguna baru."""
@@ -86,9 +91,11 @@ class ATMManager:
             self.add_transaction(f"Tarik Tunai: -Rp {amount:,}")
             print(Fore.GREEN + f"Berhasil menarik Rp {amount:,}. Saldo Anda sekarang: Rp {self.users[self.current_user]['balance']:,}" + Style.RESET_ALL)
 
-    def deposit(self):
+    def deposit(self, amount):
         """Melakukan setor tunai."""
-        amount = self.get_valid_amount("Masukkan jumlah yang ingin disetor: ")
+        if amount <= 0:
+            print(Fore.RED + "Jumlah harus lebih besar dari 0." + Style.RESET_ALL)
+            return
         self.users[self.current_user]['balance'] += amount
         self.add_transaction(f"Setor Tunai: +Rp {amount:,}")
         print(Fore.GREEN + f"Berhasil menyetor Rp {amount:,}. Saldo Anda sekarang: Rp {self.users[self.current_user]['balance']:,}" + Style.RESET_ALL)
@@ -117,6 +124,7 @@ class ATMManager:
             self.users[target_account]['balance'] += amount
             self.add_transaction(f"Transfer ke {target_account}: -Rp {amount:,}")
             self.add_transaction(f"Transfer dari {self.current_user}: +Rp {amount:,}", target_account)
+            self.save_users()  # Simpan data setelah transfer
             print(Fore.GREEN + f"Berhasil mentransfer Rp {amount:,} ke rekening {target_account}." + Style.RESET_ALL)
 
     def add_transaction(self, description, account=None):
@@ -130,6 +138,7 @@ class ATMManager:
         }
         self.users[account]['transactions'].append(transaction)
         self.session_transactions.append(transaction)  # Tambahkan ke transaksi sesi login
+        self.save_users()  # Simpan data setelah transaksi
 
     def view_transactions(self):
         """Menampilkan riwayat transaksi pengguna."""
@@ -154,7 +163,7 @@ class ATMManager:
         else:
             print(Fore.YELLOW + "Tidak ada transaksi selama sesi login." + Style.RESET_ALL)
 
-        self.save_users()
+        self.save_users()  # Simpan data sebelum logout
         print(Fore.GREEN + "Data berhasil disimpan. Terima kasih telah menggunakan layanan kami." + Style.RESET_ALL)
         self.current_user = None
         self.session_transactions = []  # Reset transaksi sesi login

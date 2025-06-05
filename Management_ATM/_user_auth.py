@@ -22,10 +22,16 @@ class UserManagement(ATMManager):
             print(Fore.RED + "PIN harus 5 digit." + Style.RESET_ALL)
             return False
 
-        if account_number in self.users and self.users[account_number]['pin'] == pin:
-            self.current_user = account_number
-            print(Fore.GREEN + "Login berhasil." + Style.RESET_ALL)
-            return True
+        if account_number in self.users:
+            if self.users[account_number]['pin'] == pin:
+                self.current_user = account_number
+                print(Fore.GREEN + "Login berhasil." + Style.RESET_ALL)
+                return True
+            else:
+                print(Fore.RED + "PIN salah." + Style.RESET_ALL)
+                return False
         else:
-            print(Fore.RED + "Autentikasi gagal." + Style.RESET_ALL)
-            return False
+            print(Fore.YELLOW + "Nomor rekening tidak ditemukan. Membuat akun baru..." + Style.RESET_ALL)
+            self.create_user(account_number, pin)
+            self.current_user = account_number
+            return True
