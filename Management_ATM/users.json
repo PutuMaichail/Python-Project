@@ -1,0 +1,13 @@
+{
+    "123": {
+        "pin": "12345",
+        "balance": 100000000,
+        "transactions": [
+            {
+                "id": "cb5291af-fa64-4acd-8575-d8290ca99645",
+                "description": "Setor Tunai: +Rp 100,000,000",
+                "date": "2025-06-05 04:24:03"
+            }
+        ]
+    }
+}
