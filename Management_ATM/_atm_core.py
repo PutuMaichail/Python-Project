@@ -63,7 +63,6 @@ class ATMManager:
         if account_number in self.users:
             if self.users[account_number]['pin'] == pin:
                 self.current_user = account_number
-                self.session_transactions = []  # Reset transaksi sesi login
                 print(Fore.GREEN + "Login berhasil." + Style.RESET_ALL)
                 return True
             else:
@@ -73,7 +72,7 @@ class ATMManager:
             print(Fore.YELLOW + "Nomor rekening tidak ditemukan. Membuat akun baru..." + Style.RESET_ALL)
             self.create_user(account_number, pin)
             self.current_user = account_number
-            self.session_transactions = []  # Reset transaksi sesi login
+            logging.info(f"Akun baru dibuat untuk rekening {account_number}.")
             return True
 
     def check_balance(self):
@@ -81,9 +80,8 @@ class ATMManager:
         balance = self.users[self.current_user]['balance']
         print(Fore.CYAN + f"Saldo Anda: Rp {balance:,}" + Style.RESET_ALL)
 
-    def withdraw(self):
+    def withdraw(self, amount):
         """Melakukan penarikan tunai."""
-        amount = self.get_valid_amount("Masukkan jumlah yang ingin ditarik: ")
         if amount > self.users[self.current_user]['balance']:
             print(Fore.RED + "Saldo tidak mencukupi." + Style.RESET_ALL)
         else:
@@ -112,6 +110,9 @@ class ATMManager:
     def transfer(self):
         """Melakukan transfer antar-rekening."""
         target_account = input("Masukkan nomor rekening tujuan (3 digit): ").strip()
+        if len(target_account) != 3 or not target_account.isdigit():
+            print(Fore.RED + "Nomor rekening tujuan harus 3 digit." + Style.RESET_ALL)
+            return
         if target_account not in self.users:
             print(Fore.RED + "Nomor rekening tujuan tidak ditemukan." + Style.RESET_ALL)
             return
@@ -131,6 +132,9 @@ class ATMManager:
         """Menambahkan riwayat transaksi."""
         if account is None:
             account = self.current_user
+        if account not in self.users:
+            print(Fore.RED + f"Akun {account} tidak ditemukan." + Style.RESET_ALL)
+            return
         transaction = {
             'id': str(uuid.uuid4()),
             'description': description,
@@ -164,6 +168,7 @@ class ATMManager:
             print(Fore.YELLOW + "Tidak ada transaksi selama sesi login." + Style.RESET_ALL)
 
         self.save_users()  # Simpan data sebelum logout
+        logging.info(f"User dengan rekening {self.current_user} logout.")
         print(Fore.GREEN + "Data berhasil disimpan. Terima kasih telah menggunakan layanan kami." + Style.RESET_ALL)
         self.current_user = None
         self.session_transactions = []  # Reset transaksi sesi login
