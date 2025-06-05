@@ -20,25 +20,28 @@ def main():
         print("7. Keluar")
         choice = input("Pilih menu: ").strip()
 
-        if choice == '1':
-            atm.check_balance()
-        elif choice == '2':
-            amount = int(input("Masukkan jumlah: "))
-            atm.withdraw(amount)
-        elif choice == '3':
-            amount = int(input("Masukkan jumlah: "))
-            atm.deposit(amount)
-        elif choice == '4':
-            atm.transfer()
-        elif choice == '5':
-            atm.change_pin()
-        elif choice == '6':
-            atm.view_transactions()
-        elif choice == '7':
-            atm.logout()
-            break
-        else:
-            print("Pilihan tidak valid.")
+        try:
+            if choice == '1':
+                atm.check_balance()
+            elif choice == '2':
+                amount = atm.get_valid_amount("Masukkan jumlah: ")
+                atm.withdraw(amount)
+            elif choice == '3':
+                amount = atm.get_valid_amount("Masukkan jumlah: ")
+                atm.deposit(amount)
+            elif choice == '4':
+                atm.transfer()
+            elif choice == '5':
+                atm.change_pin()
+            elif choice == '6':
+                atm.view_transactions()
+            elif choice == '7':
+                atm.logout()
+                break
+            else:
+                print("Pilihan tidak valid.")
+        except Exception as e:
+            print(f"Terjadi kesalahan: {e}")
 
 if __name__ == "__main__":
     main()

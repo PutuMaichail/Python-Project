@@ -3,6 +3,7 @@ import json
 import getpass
 from datetime import datetime
 import uuid
+import logging
 from colorama import Fore, Style
 from _helpers import configure_logging
 
@@ -82,6 +83,9 @@ class ATMManager:
 
     def withdraw(self, amount):
         """Melakukan penarikan tunai."""
+        if amount <= 0:
+            print(Fore.RED + "Jumlah harus lebih besar dari 0." + Style.RESET_ALL)
+            return
         if amount > self.users[self.current_user]['balance']:
             print(Fore.RED + "Saldo tidak mencukupi." + Style.RESET_ALL)
         else:
@@ -118,6 +122,9 @@ class ATMManager:
             return
 
         amount = self.get_valid_amount("Masukkan jumlah yang ingin ditransfer: ")
+        if amount <= 0:
+            print(Fore.RED + "Jumlah harus lebih besar dari 0." + Style.RESET_ALL)
+            return
         if amount > self.users[self.current_user]['balance']:
             print(Fore.RED + "Saldo tidak mencukupi." + Style.RESET_ALL)
         else:

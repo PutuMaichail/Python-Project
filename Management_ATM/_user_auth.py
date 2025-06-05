@@ -4,14 +4,17 @@ from _atm_core import ATMManager
 
 class UserManagement(ATMManager):
     def create_user(self, account_number, pin):
+        """Membuat pengguna baru."""
         self.users[account_number] = {
             'pin': pin,
             'balance': 0,
             'transactions': []
         }
         print(Fore.GREEN + f"Akun baru berhasil dibuat untuk nomor rekening {account_number}." + Style.RESET_ALL)
+        self.save_users()  # Simpan data pengguna setelah membuat akun baru
 
     def authenticate_user(self):
+        """Mengautentikasi pengguna berdasarkan nomor rekening dan PIN."""
         account_number = input("Masukkan Nomor Rekening (3 digit): ").strip()
         if len(account_number) != 3 or not account_number.isdigit():
             print(Fore.RED + "Nomor rekening harus 3 digit." + Style.RESET_ALL)
@@ -34,4 +37,5 @@ class UserManagement(ATMManager):
             print(Fore.YELLOW + "Nomor rekening tidak ditemukan. Membuat akun baru..." + Style.RESET_ALL)
             self.create_user(account_number, pin)
             self.current_user = account_number
+            print(Fore.GREEN + "Akun baru berhasil dibuat dan login otomatis." + Style.RESET_ALL)
             return True
